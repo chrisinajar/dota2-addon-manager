@@ -1,6 +1,6 @@
 {
   "name": "dota2-addon-manager",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Manage multiple git hosted dota2 addons with less pain",
   "main": "index.js",
   "scripts": {
