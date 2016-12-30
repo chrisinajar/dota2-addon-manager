@@ -39,6 +39,17 @@ Check the symlinks for an addon or for all addons if `name` is not specified. If
 #### d2am `create <name>`
 Create the skeleton for `name` inside the addons directory. This will automatically run `d2am link` for this mod, following all of it's normal behavior.
 
+# Definition File
+The links are also configurable unsing a very simply json structure. This is the default `definition.json` file:
+```json
+{
+  "game": "game/dota_addons/{ADDON_NAME}/",
+  "content": "content/dota_addons/{ADDON_NAME}/"
+}
+```
+
+Each key is a directory relative to the addon's root directory, and each value is the destination link relative to the base directory. The string `{ADDON_NAME}` is replaced with the name of the addon being linked.
+
 ## Contributing
 `npm run test`
 
