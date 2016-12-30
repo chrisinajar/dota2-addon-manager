@@ -1,0 +1,37 @@
+{
+  "name": "dota2-addon-manager",
+  "version": "0.0.0",
+  "description": "Manage multiple git hosted dota2 addons with less pain",
+  "main": "index.js",
+  "scripts": {
+    "test": "semistandard"
+  },
+  "bin": {
+    "d2am": "./cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisinajar/dota2-addon-manager.git"
+  },
+  "keywords": [
+    "dota2",
+    "addons"
+  ],
+  "author": "Chris Vickery <chrisinajar@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisinajar/dota2-addon-manager/issues"
+  },
+  "homepage": "https://github.com/chrisinajar/dota2-addon-manager#readme",
+  "devDependencies": {
+    "semistandard": "^9.2.1"
+  },
+  "dependencies": {
+    "after": "^0.8.2",
+    "ap": "^0.2.0",
+    "assert-ok": "^1.0.0",
+    "fs-extra": "^1.0.0",
+    "xtend": "^4.0.1",
+    "yargs": "^6.5.0"
+  }
+}
