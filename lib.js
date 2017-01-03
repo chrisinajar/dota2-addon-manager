@@ -63,6 +63,14 @@ function create (state, name) {
   }
 }
 
+function getDefinitionForAddon (state, addon) {
+  try {
+    return require(path.join(state.addonDir, addon, 'd2am.json'));
+  } catch (e) {
+    return state.definition;
+  }
+}
+
 // iterate over all addons and setup symlinks
 // if name is passed in, just do it to that one
 function link (state, name) {
@@ -77,7 +85,7 @@ function link (state, name) {
   function linkAddon (addon) {
     console.log('checking symbolic links for', addon);
 
-    return Object.keys(state.definition).map(partial(linkAddonDirectory, addon));
+    return Object.keys(getDefinitionForAddon(state, addon)).map(partial(linkAddonDirectory, addon));
   }
   function linkAddonDirectory (addon, linkName) {
     var baseDir = path.join(state.addonDir, addon, linkName);
