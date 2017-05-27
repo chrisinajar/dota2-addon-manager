@@ -93,43 +93,67 @@ function link (state, name) {
     var linkDirParts = path.parse(linkDir);
     var backupDir = path.join(linkDirParts.dir, linkDirParts.base + '.old');
     var isEmpty = false;
-    var resolvedDir;
+    var linkResolvedDir;
+    var baseResolvedDir;
+    var linkExists = false;
+
+    if (fsExtra.pathExistsSync(backupDir)) {
+      fsExtra.removeSync(backupDir);
+    }
 
     try {
-      resolvedDir = fs.realpathSync(linkDir);
+      linkResolvedDir = fs.realpathSync(linkDir);
+      linkExists = true;
     } catch (e) {
       if (e.code === 'ENOENT') {
-        resolvedDir = null;
+        linkResolvedDir = null;
       } else {
         exitWithError(state, e);
       }
     }
 
-    if (resolvedDir === baseDir) {
-      return true;
+    if (linkResolvedDir === baseDir) {
+      console.log(' *', addon, linkName, 'has reverse junctions, fixing this because volvo is terrible');
+      fsExtra.removeSync(linkDir);
+      fsExtra.moveSync(baseDir, linkDir);
+      fsExtra.ensureSymlinkSync(linkDir, baseDir, 'junction');
+      return;
     }
+
+    var baseExists = false;
+
+    try {
+      baseResolvedDir = fs.realpathSync(baseDir);
+      baseExists = true;
+    } catch (e) {
+      if (e.code === 'ENOENT') {
+        baseResolvedDir = null;
+      } else {
+        exitWithError(state, e);
+      }
+    }
+    if (baseResolvedDir === linkDir || baseResolvedDir + path.sep === linkDir) {
+      return;
+    }
+
     // newline for dramatic effect
     console.log();
     console.log(' *', addon, linkName, 'must be linked');
 
-    isEmpty = fs.readdirSync(baseDir).length === 0;
-
-    if (resolvedDir) {
-      if (isEmpty) {
-        console.log(' *', addon, linkName, 'is empty, copying the contents from volvo');
-        fs.readdirSync(linkDir).map(function (name) {
-          fsExtra.copySync(path.join(linkDir, name), path.join(baseDir, name));
-        });
+    if (baseExists) {
+      if (baseResolvedDir !== baseDir || fs.readdirSync(baseDir).length === 0) {
+        fsExtra.removeSync(baseDir);
       } else {
-        console.log(' *', addon, linkName, 'backing up old directory to', linkDirParts.base + '.old');
-        fs.renameSync(linkDir, backupDir);
+        if (linkExists) {
+          console.log(' *', addon, linkName, 'backing up old directory');
+          fsExtra.moveSync(linkDir, backupDir);
+        }
+        console.log(' *', addon, linkName, 'copying into volvo directory for reverse link');
+        fsExtra.copySync(baseDir, linkDir);
       }
-    } else {
-      console.log(' *', addon, linkName, 'has not been created in the dota tools yet. Creating it for you!');
-      console.log(' * If you somehow destroy the temporary link, just run "d2am link" to recreate them');
     }
 
-    return fsExtra.ensureSymlinkSync(baseDir, linkDir, 'junction');
+    // return fsExtra.ensureSymlinkSync(linkDir, baseDir, 'junction');
   }
 }
 
