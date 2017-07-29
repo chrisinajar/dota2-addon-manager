@@ -149,11 +149,11 @@ function link (state, name) {
           fsExtra.moveSync(linkDir, backupDir);
         }
         console.log(' *', addon, linkName, 'copying into volvo directory for reverse link');
-        fsExtra.copySync(baseDir, linkDir);
+        fsExtra.moveSync(baseDir, linkDir);
       }
     }
 
-    // return fsExtra.ensureSymlinkSync(linkDir, baseDir, 'junction');
+    return fsExtra.ensureSymlinkSync(linkDir, baseDir, 'junction');
   }
 }
 
